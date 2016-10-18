@@ -56,6 +56,12 @@ try {
 	// Flip latitude and longitude dimension in FaceVector ordering
 	bool fFlipLatLon;
 
+	// half-polar-cell option. J.W.Zhuang 2016/10
+	bool isHalfPole;
+
+	// half-box westward lon-shift option. J.W.Zhuang 2016/10
+	bool isLonShift;
+
 	// Output filename
 	std::string strOutputFile;
 
@@ -68,6 +74,8 @@ try {
 		CommandLineDouble(dLatBegin, "lat_begin", -90.0);
 		CommandLineDouble(dLatEnd, "lat_end", 90.0);
 		CommandLineBool(fFlipLatLon, "flip");
+		CommandLineBool(isHalfPole, "halfpole");
+		CommandLineBool(isLonShift, "lonshift");
 		CommandLineString(strOutputFile, "file", "outRLLMesh.g");
 
 		ParseCommandLine(argc, argv);
@@ -81,6 +89,14 @@ try {
 		_EXCEPTIONT("--lon_begin and --lon_end must specify a positive interval");
 	}
 
+	// half-box westward lon-shift. J.W.Zhuang 2016/10
+	// so that the first column is centered at 0 degree lon
+	// the change can be shown in the announcement below 
+	if (isLonShift) {
+	    dLonBegin -= 180.0/static_cast<Real>(nLongitudes);
+	    dLonEnd   -= 180.0/static_cast<Real>(nLongitudes);
+	}
+
 	// Announce
 	std::cout << "=========================================================";
 	std::cout << std::endl;
@@ -90,6 +106,10 @@ try {
 	std::cout << dLonBegin << ", " << dLonEnd << "]" << std::endl;
 	std::cout << "..Latitudes in range [";
 	std::cout << dLatBegin << ", " << dLatEnd << "]" << std::endl;
+	std::cout << "..is half-polar-cell? [";
+	std::cout << isHalfPole << "]" << std::endl;
+	std::cout << "..is half-box westward lon-shift? [";
+	std::cout << isLonShift << "]" << std::endl;
 	std::cout << std::endl;
 
 	// Convert latitude and longitude interval to radians
@@ -144,14 +164,38 @@ try {
 	}
 	for (int j = iInteriorLatBegin; j < iInteriorLatEnd+1; j++) {
 		for (int i = 0; i < nLongitudeNodes; i++) {
-			Real dPhiFrac =
+			Real dPhiFrac; //must declare first
+			
+                        // Half-polar cell.( J.W.Zhuang 2016/10 ) 
+                        // There should be some bugs for regional mesh,
+                        // but we only use global. 
+                        if ( isHalfPole ) {
+                          if (j == iInteriorLatBegin) {
+			  dPhiFrac =
+			  	1 / (static_cast<Real>(nLatitudes-1) * 2);
+                          }
+                          else if (j == iInteriorLatEnd) {
+			  dPhiFrac =
+			  	1.0 - 1 / (static_cast<Real>(nLatitudes-1) * 2);
+                          }
+                          else {
+			  dPhiFrac =
+			       	1 / (static_cast<Real>(nLatitudes-1) * 2)
+                                + static_cast<Real>(j-1)
+                                / static_cast<Real>(nLatitudes-1);
+                          }
+                        }
+                        // No-half-polar cell. Original implementation
+                        else {
+			dPhiFrac =
 				  static_cast<Real>(j)
 				/ static_cast<Real>(nLatitudes);
+                        }
 
 			Real dLambdaFrac =
 				  static_cast<Real>(i)
 				/ static_cast<Real>(nLongitudes);
-
+                        
 			Real dPhi = dDeltaLat * dPhiFrac + dLatBegin;
 			Real dLambda = dDeltaLon * dLambdaFrac + dLonBegin;
 

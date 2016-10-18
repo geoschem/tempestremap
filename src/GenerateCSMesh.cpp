@@ -65,15 +65,39 @@ void GenerateCSMultiEdgeVertices(
 	edge.push_back(ix0);
 
 	int i;
+        // constant angles for CS grid calculation
+        Real theta = atan(sqrt(2));
+        Real gama = M_PI - 2*theta;
 	for (i = 1; i < nRefineLevel; i++) {
 
 		// Nodes along line in Cartesian geometry
 		Real alpha =
 			static_cast<Real>(i) / static_cast<Real>(nRefineLevel);
 
-		alpha = 0.5 * (tan(0.25 * M_PI * (2.0 * alpha - 1.0)) + 1.0);
-
-		// Insert node along edge
+                // --------------------------------------------------------------
+                // Implement various CS projections J.W.Zhuang 2016/10
+                // Switch between different projections by commenting out codes
+                // For GEOS5/GCHP/FV3, by default we use NO.0 grid. 
+                // --------------------------------------------------------------
+                // NO.0(default)  "true-equi-distant" grid; gridtype = 0 in FV3
+                // It is used in the GEOS system for being the most uniform gnomonic grid
+                // This means equi-distant spacing along the EDGES of cube panels
+                // (measured on the curved surface, after being projected to the sphere).
+                alpha = sqrt(3)/2 * sin(gama*alpha) / sin(M_PI - theta - gama*alpha);
+                // --------------------------------------------------------------
+                // NO.1  "traditional-equi-distant" grid; gridtype = 1 in FV3
+                // This means equi-distant spacing along the middle lines of cube faces
+                // (measured on the flat surface, before being projected to the sphere).
+                // alpha = alpha; 
+                // --------------------------------------------------------------
+                // NO.2  "traditional-equi-angular" grid; gridtype = 2 in FV3
+                // Original implementation in Tempest.
+                // This means equi-distant spacing along the middle lines of cube panels 
+                // (measured on the curved surface, after being projected to the sphere).
+		// alpha = 0.5 * (tan(0.25 * M_PI * (2.0 * alpha - 1.0)) + 1.0);
+                // --------------------------------------------------------------
+    
+                // Insert node along edge
 		int ixNode = InsertCSSubNode(ix0, ix1, alpha, nodes);
 
 		// Add node to edge

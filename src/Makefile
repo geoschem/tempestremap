@@ -1,13 +1,14 @@
 ##############################################################################
 # Compiler and flags
-CC= g++
+CC= g++  -std=c++0x
 CCOMP= gcc
 CFLAGS= -O3
 #CFLAGS= -g
 
+
 # NETCDF library directories
-NETCDF_INCLUDEDIR=/opt/local/include
-NETCDF_LIBDIR=/opt/local/lib
+NETCDF_INCLUDEDIR=$(NETCDF_HOME)/include
+NETCDF_LIBDIR=$(NETCDF_HOME)/lib
 
 # Library files to include
 UNAME=$(shell uname)
