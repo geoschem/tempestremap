@@ -62,7 +62,10 @@ try {
 	// half-box westward lon-shift option. J.W.Zhuang 2016/10
 	bool isLonShift;
 
-	// Output filename
+	// 10 degree eastward lon-shift option. J.W.Zhuang 2016/12
+	bool isGMAOoffset;
+
+        // Output filename
 	std::string strOutputFile;
 
 	// Parse the command line
@@ -76,6 +79,7 @@ try {
 		CommandLineBool(fFlipLatLon, "flip");
 		CommandLineBool(isHalfPole, "halfpole");
 		CommandLineBool(isLonShift, "lonshift");
+		CommandLineBool(isGMAOoffset, "GMAOoffset");
 		CommandLineString(strOutputFile, "file", "outRLLMesh.g");
 
 		ParseCommandLine(argc, argv);
@@ -97,6 +101,14 @@ try {
 	    dLonEnd   -= 180.0/static_cast<Real>(nLongitudes);
 	}
 
+	// 10 degree eastward lon-shift. J.W.Zhuang 2016/12
+	// to avoid cube corner over land 
+	// the change can be shown in the announcement below 
+	if (isGMAOoffset) {
+	    dLonBegin += 10.0; 
+	    dLonEnd   += 10.0;
+        }
+
 	// Announce
 	std::cout << "=========================================================";
 	std::cout << std::endl;
@@ -110,6 +122,8 @@ try {
 	std::cout << isHalfPole << "]" << std::endl;
 	std::cout << "..is half-box westward lon-shift? [";
 	std::cout << isLonShift << "]" << std::endl;
+	std::cout << "..is GMAO 10 degree offset? [";
+	std::cout << isGMAOoffset << "]" << std::endl;
 	std::cout << std::endl;
 
 	// Convert latitude and longitude interval to radians
