@@ -1,4 +1,4 @@
-Tempest customized for GEOS5/GCHP cube-sphere.
+# Tempest customized for GEOS5/GCHP cube-sphere.
 
 Modifications include:
 
@@ -10,7 +10,7 @@ Can be enabled by, for example: <br />
 The default option is the CS grid used in GEOS5/GCHP.
 Switch between different projections by commenting out codes in src/GenerateCSMesh.cpp
  
-3.Implemented GMAO offset (10degree eastward shift) <br />
+3. Implemented GMAO offset (10degree eastward shift) <br />
 Can be enabled by: <br />
 ./GenerateRLLMesh --lon 72 --lat 46 --file lon72_lat46.g --GMAOoffset 
    
@@ -18,8 +18,8 @@ Can be enabled by: <br />
 
 Jiawei Zhuang 3/25/2017
 
-========================
 Original README:
+=============
 
 TempestRemap
 =============
