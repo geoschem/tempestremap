@@ -1,3 +1,26 @@
+Tempest customized for GEOS5/GCHP cube-sphere.
+
+Modifications include:
+
+1. Implemented half-polar-cell and half-box-westward-shift options for RLL mesh. <br />
+Can be enabled by, for example: <br />
+./GenerateRLLMesh --lon 72 --lat 46 --file lon72_lat46.g --halfpole --lonshift
+    
+2. Implemented various cube-sphere projections in FV3. <br />
+The default option is the CS grid used in GEOS5/GCHP.
+Switch between different projections by commenting out codes in src/GenerateCSMesh.cpp
+ 
+3.Implemented GMAO offset (10degree eastward shift) <br />
+Can be enabled by: <br />
+./GenerateRLLMesh --lon 72 --lat 46 --file lon72_lat46.g --GMAOoffset 
+   
+4. Modifications in src/Makefile to compile on Odyssey. <br />
+
+Jiawei Zhuang 3/25/2017
+
+========================
+Original README:
+
 TempestRemap
 =============
 
