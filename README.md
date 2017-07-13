@@ -1,4 +1,4 @@
-# Tempest customized for GEOS5/GCHP cube-sphere.
+# Fork of tempestremap that is customized for GEOS5/GCHP cube-sphere.
 
 Modifications include:
 
@@ -156,5 +156,3 @@ Summary
 -------
 
 Please let me know if you have any problems / bugs / comments / feature requests.
-
-
