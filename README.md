@@ -1,3 +1,5 @@
+## NOTE: THIS FORK IS OBSOLETE AND HAS BEEN ARCHIVED.
+
 # Fork of tempestremap that is customized for GEOS5/GCHP cube-sphere.
 
 Modifications include:
